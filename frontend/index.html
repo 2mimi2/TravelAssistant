@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartTravelAssistant — 智能旅游助手</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <div class="logo">
+                <span class="logo-icon">✈️</span>
+                <span class="logo-text">SmartTravel</span>
+            </div>
+            <nav class="nav-tabs" id="navTabs">
+                <button class="nav-tab active" data-tab="plan">行程规划</button>
+                <button class="nav-tab" data-tab="vision">图像识别</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <!-- 行程规划 Tab -->
+        <section class="tab-panel active" id="tab-plan">
+            <div class="plan-layout">
+                <div class="plan-form-card">
+                    <h2 class="card-title">✨ 定制你的完美旅程</h2>
+
+                    <div class="form-group">
+                        <label class="form-label">🎯 我要去哪儿？</label>
+                        <input type="text" id="destination" class="form-input"
+                               placeholder="输入目的地，如：京都、巴黎、马尔代夫...">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">📅 旅行时间</label>
+                        <div class="date-range">
+                            <input type="date" id="startDate" class="form-input">
+                            <span class="date-sep">→</span>
+                            <input type="date" id="endDate" class="form-input">
+                        </div>
+                        <span class="form-hint" id="daysHint">共 3 天</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">💰 预算（不含大交通）</label>
+                        <div class="radio-group" id="budgetGroup">
+                            <label class="radio-card">
+                                <input type="radio" name="budget" value="economy">
+                                <span class="radio-label">经济</span>
+                                <span class="radio-desc">2000以下</span>
+                            </label>
+                            <label class="radio-card active">
+                                <input type="radio" name="budget" value="comfort" checked>
+                                <span class="radio-label">舒适</span>
+                                <span class="radio-desc">2000-5000</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="budget" value="luxury">
+                                <span class="radio-label">轻奢</span>
+                                <span class="radio-desc">5000-8000</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="budget" value="unlimited">
+                                <span class="radio-label">无上限</span>
+                                <span class="radio-desc">随心所欲</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="budget" value="custom">
+                                <span class="radio-label">自定义</span>
+                                <span class="radio-desc">自己定</span>
+                            </label>
+                        </div>
+                        <div class="custom-budget-row hidden" id="customBudgetRow">
+                            <span class="custom-budget-prefix">¥</span>
+                            <input type="number" id="customBudget" class="form-input custom-budget-input"
+                                   placeholder="输入预算金额" min="0" step="100">
+                            <span class="custom-budget-suffix">元/人</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">🏷️ 我的偏好（多选）</label>
+                        <div class="tag-group" id="prefGroup">
+                            <span class="tag" data-tag="美食">🍜 美食</span>
+                            <span class="tag" data-tag="人文历史">🏛️ 人文历史</span>
+                            <span class="tag" data-tag="自然风光">🏔️ 自然风光</span>
+                            <span class="tag" data-tag="网红打卡">📸 网红打卡</span>
+                            <span class="tag" data-tag="亲子">👶 亲子</span>
+                            <span class="tag" data-tag="小众冷门">🔍 小众冷门</span>
+                            <span class="tag" data-tag="购物">🛍️ 购物</span>
+                            <span class="tag" data-tag="慢节奏">☕ 慢节奏</span>
+                            <span class="tag" data-tag="特种兵">⚡ 特种兵</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">👥 同行人</label>
+                        <div class="radio-group" id="companionGroup">
+                            <label class="radio-card active">
+                                <input type="radio" name="companions" value="solo" checked>
+                                <span class="radio-label">独自</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="companions" value="couple">
+                                <span class="radio-label">伴侣</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="companions" value="friends">
+                                <span class="radio-label">朋友</span>
+                            </label>
+                            <label class="radio-card">
+                                <input type="radio" name="companions" value="with_kids">
+                                <span class="radio-label">带娃</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">💬 还有什么特别要求？（选填）</label>
+                        <textarea id="notes" class="form-input form-textarea"
+                                  placeholder="比如：第一天不要太累，想去看日出，对海鲜过敏..."></textarea>
+                    </div>
+
+                    <button id="generateBtn" class="btn-primary btn-large">
+                        ✨ 生成行程
+                    </button>
+                </div>
+
+                <div class="plan-result-card" id="planResult">
+                    <div class="result-empty" id="resultEmpty">
+                        <div class="empty-icon">🗺️</div>
+                        <p class="empty-text">填写左侧信息，点击「生成行程」<br>AI 将为你定制专属旅行计划</p>
+                    </div>
+                    <div class="result-loading hidden" id="resultLoading">
+                        <div class="loading-header">
+                            <span class="loading-spinner"></span>
+                            <span class="loading-title">正在为你规划...</span>
+                        </div>
+                        <div class="progress-steps" id="progressSteps"></div>
+                        <div class="skeleton-card">
+                            <div class="skeleton skeleton-header"></div>
+                            <div class="skeleton-row"><div class="skeleton skeleton-time"></div><div class="skeleton skeleton-text"></div></div>
+                            <div class="skeleton-row"><div class="skeleton skeleton-time"></div><div class="skeleton skeleton-text short"></div></div>
+                            <div class="skeleton-row"><div class="skeleton skeleton-time"></div><div class="skeleton skeleton-text medium"></div></div>
+                        </div>
+                        <div class="skeleton-card">
+                            <div class="skeleton skeleton-header"></div>
+                            <div class="skeleton-row"><div class="skeleton skeleton-time"></div><div class="skeleton skeleton-text"></div></div>
+                            <div class="skeleton-row"><div class="skeleton skeleton-time"></div><div class="skeleton skeleton-text medium"></div></div>
+                            <div class="skeleton-row"><div class="skeleton skeleton-time"></div><div class="skeleton skeleton-text short"></div></div>
+                        </div>
+                    </div>
+                    <div class="result-content hidden" id="resultContent"></div>
+                </div>
+            </div>
+
+            <!-- 行程问答区 -->
+            <div class="qa-section hidden" id="qaSection">
+                <div class="qa-card">
+                    <h3 class="qa-title">💡 对行程有疑问？</h3>
+                    <div class="qa-templates" id="qaTemplates">
+                        <span class="qa-template" data-q="这里天气怎么样？需要带什么衣服？">🌤️ 天气穿搭</span>
+                        <span class="qa-template" data-q="有哪些需要提前预订的？">🎫 提前预订</span>
+                        <span class="qa-template" data-q="推荐什么交通方式？">🚇 交通建议</span>
+                        <span class="qa-template" data-q="有什么当地美食推荐？">🍜 美食推荐</span>
+                        <span class="qa-template" data-q="有什么注意事项或避坑建议？">⚠️ 注意事项</span>
+                    </div>
+                    <div class="qa-input-row">
+                        <input type="text" id="qaInput" class="form-input"
+                               placeholder="比如：第二天穿什么合适？这个季节需要注意什么？">
+                        <button id="qaBtn" class="btn-secondary">提问</button>
+                    </div>
+                    <div class="qa-answer hidden" id="qaAnswer"></div>
+                </div>
+            </div>
+
+            <!-- 调整弹窗 -->
+            <div class="modal-overlay hidden" id="adjustModal">
+                <div class="modal-card">
+                    <div class="modal-header">
+                        <span id="adjustModalTitle">调整行程</span>
+                        <button class="modal-close" id="adjustModalClose">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="modal-hint" id="adjustModalHint"></p>
+                        <textarea id="adjustModalInput" class="form-input form-textarea"
+                                  placeholder="描述你想要的调整..."></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-secondary" id="adjustModalCancel">取消</button>
+                        <button class="btn-primary" id="adjustModalSubmit">确认调整</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 上一次行程恢复提示 -->
+            <div class="restore-banner hidden" id="restoreBanner">
+                <span>📌 检测到你上次生成的行程</span>
+                <button class="btn-secondary btn-sm" id="restoreBtn">继续查看</button>
+                <button class="restore-dismiss" id="restoreDismiss">&times;</button>
+            </div>
+        </section>
+
+        <!-- 图像识别 Tab -->
+        <section class="tab-panel" id="tab-vision">
+            <div class="vision-grid">
+                <!-- 景点识别 -->
+                <div class="vision-card">
+                    <div class="vision-card-header">
+                        <span class="vision-icon">📍</span>
+                        <h3>景点识别</h3>
+                        <p>拍照识别地标，获取详细信息</p>
+                    </div>
+                    <div class="upload-zone" id="identifyUpload">
+                        <input type="file" accept="image/*" class="upload-input"
+                               id="identifyFile" capture="environment">
+                        <div class="upload-placeholder">
+                            <span class="upload-icon">📷</span>
+                            <span>点击或拖拽上传景点照片</span>
+                        </div>
+                        <img class="upload-preview hidden" id="identifyPreview">
+                    </div>
+                    <div class="vision-result hidden" id="identifyResult"></div>
+                    <button class="btn-primary vision-btn" id="identifyBtn" disabled>
+                        识别景点
+                    </button>
+                </div>
+
+                <!-- 菜单翻译 -->
+                <div class="vision-card">
+                    <div class="vision-card-header">
+                        <span class="vision-icon">🍽️</span>
+                        <h3>菜单翻译</h3>
+                        <p>拍菜单，翻译+推荐菜品</p>
+                    </div>
+                    <div class="upload-zone" id="menuUpload">
+                        <input type="file" accept="image/*" class="upload-input"
+                               id="menuFile" capture="environment">
+                        <div class="upload-placeholder">
+                            <span class="upload-icon">📋</span>
+                            <span>点击或拖拽上传菜单照片</span>
+                        </div>
+                        <img class="upload-preview hidden" id="menuPreview">
+                    </div>
+                    <div class="vision-result hidden" id="menuResult"></div>
+                    <button class="btn-primary vision-btn" id="menuBtn" disabled>
+                        翻译菜单
+                    </button>
+                </div>
+
+                <!-- 拍照推荐 -->
+                <div class="vision-card">
+                    <div class="vision-card-header">
+                        <span class="vision-icon">🎨</span>
+                        <h3>拍照推荐</h3>
+                        <p>拍风景，AI推荐周边玩法</p>
+                    </div>
+                    <div class="upload-zone" id="recommendUpload">
+                        <input type="file" accept="image/*" class="upload-input"
+                               id="recommendFile" capture="environment">
+                        <div class="upload-placeholder">
+                            <span class="upload-icon">🏞️</span>
+                            <span>点击或拖拽上传风景照片</span>
+                        </div>
+                        <img class="upload-preview hidden" id="recommendPreview">
+                    </div>
+                    <div class="vision-result hidden" id="recommendResult"></div>
+                    <button class="btn-primary vision-btn" id="recommendBtn" disabled>
+                        获取推荐
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 移动端悬浮拍照按钮 -->
+    <button class="fab-camera hidden" id="fabCamera" title="快速拍照">
+        📷
+    </button>
+
+    <footer class="footer">
+        <p>SmartTravelAssistant — AI 驱动的智能旅行助手 · Powered by DeepSeek & Qwen</p>
+    </footer>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/components.js"></script>
+    <script src="/js/app.js"></script>
+</body>
+</html>
