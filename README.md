@@ -14,6 +14,30 @@
 
 ---
 
+## 效果展示
+
+### 首页 & 行程生成
+
+![首页](screenshots/Homepage.png)
+
+![行程进度](screenshots/Progress.png)
+
+### 行程结果
+
+![结果1](screenshots/Result1.png)
+
+![结果2](screenshots/Result2.png)
+
+### 图像识别
+
+![图像识别](screenshots/ImageRecognition.png)
+
+### 行程调整
+
+![调整弹窗](screenshots/Adjustment.png)
+
+---
+
 ## 技术架构
 
 ```
@@ -97,15 +121,7 @@ TravelAssistant/
 
 ---
 
-## API 接口
-
-### 行程
-
-| 方法 | 路径 | 模型 | 传输 | 说明 |
-|------|------|------|------|------|
-| POST | `/api/trip/plan` | DeepSeek | SSE 流式 | 提交偏好表单 → AI 生成多天行程 |
-| POST | `/api/trip/adjust` | DeepSeek | JSON | 调整已有行程（换景点/加天数/改安排） |
-| POST | `/api/trip/question` | DeepSeek | JSON | 基于行程的上下文问答（含多轮记忆） |
+## | DeepSeek | JSON | 基于行程的上下文问答（含多轮记忆） |
 
 ### 图像
 

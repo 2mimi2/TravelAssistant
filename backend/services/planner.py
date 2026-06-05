@@ -77,6 +77,15 @@ async def plan_trip_stream(req: TripPlanRequest) -> AsyncGenerator[str, None]:
     response_text = "".join(full_response)
     plan_data = _extract_json(response_text)
 
+    if "error" in plan_data and not plan_data.get("days"):
+        err_msg = plan_data.get("error", "未知错误")
+        progress = SSEProgress(stage="error", message=f"生成失败: {err_msg}", data=plan_data)
+        yield f"data: {progress.model_dump_json()}\n\n"
+        return
+
+    if not plan_data.get("days"):
+        plan_data = {"error": "AI返回数据格式异常，请重试"}
+
     done_stage = stages[-1]
     progress = SSEProgress(stage=done_stage[0], message=done_stage[1], data=plan_data)
     yield f"data: {progress.model_dump_json()}\n\n"

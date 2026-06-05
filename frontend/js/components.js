@@ -18,6 +18,7 @@ const components = {
 
     renderProgressSteps(stage, message) {
         const container = document.getElementById('progressSteps');
+        if (!container) return;
 
         if (!this._seenStages.includes(stage)) {
             this._seenStages.push(stage);
@@ -153,6 +154,19 @@ const components = {
     },
 
     renderVisionMenu(data) {
+        const restaurantName = data.restaurant_name || '';
+        const isUnknown = !restaurantName || restaurantName === '未识别' || restaurantName === '未知餐厅';
+        const firstDish = (data.items || [])[0];
+        const firstDishName = firstDish
+            ? (firstDish.translation || firstDish.original_name || '')
+            : '';
+        const title = isUnknown
+            ? (firstDishName ? `🍽️ ${escapeHtml(firstDishName)}${(data.items || []).length > 1 ? ' 等' : ''}` : `🍽️ ${escapeHtml(data.cuisine_type || '菜单')}`)
+            : `🍽️ ${escapeHtml(restaurantName)}`;
+        const subtitle = isUnknown
+            ? `<div class="vr-meta">${escapeHtml(data.cuisine_type || '')}</div>`
+            : `<div class="vr-meta">${escapeHtml(data.cuisine_type || '')}</div>`;
+
         const items = (data.items || []).map(item => `
             <div class="menu-item">
                 <div class="menu-item-name">
@@ -166,8 +180,8 @@ const components = {
         `).join('');
 
         return `<div class="vision-result">
-            <div class="vr-title">🍽️ ${escapeHtml(data.restaurant_name || '菜单')}</div>
-            <div class="vr-meta">${escapeHtml(data.cuisine_type || '')}</div>
+            <div class="vr-title">${title}</div>
+            ${subtitle}
             ${items}
             ${data.summary ? `<div class="vr-section"><h4>📝 推荐总结</h4><p>${escapeHtml(data.summary)}</p></div>` : ''}
         </div>`;

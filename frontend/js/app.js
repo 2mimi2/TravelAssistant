@@ -215,9 +215,31 @@ const app = {
     _handleSSEEvent(data) {
         if (!data || !data.stage) return;
 
+        if (data.stage === 'error') {
+            document.getElementById('resultLoading').classList.add('hidden');
+            const resultEmpty = document.getElementById('resultEmpty');
+            resultEmpty.classList.remove('hidden');
+            resultEmpty.innerHTML = `<div class="empty-icon">⚠️</div>
+                <p class="empty-text">${escapeHtml(data.message || '生成失败，请重试')}</p>
+                <button class="btn-primary" style="margin-top:16px;" onclick="app.generatePlan()">🔄 重新生成</button>`;
+            return;
+        }
+
         components.renderProgressSteps(data.stage, data.message);
 
         if (data.stage === 'done' && data.data) {
+            if (data.data.error) {
+                setTimeout(() => {
+                    document.getElementById('resultLoading').classList.add('hidden');
+                    const resultEmpty = document.getElementById('resultEmpty');
+                    resultEmpty.classList.remove('hidden');
+                    resultEmpty.innerHTML = `<div class="empty-icon">⚠️</div>
+                        <p class="empty-text">${escapeHtml(data.data.error)}</p>
+                        <button class="btn-primary" style="margin-top:16px;" onclick="app.generatePlan()">🔄 重新生成</button>`;
+                }, 300);
+                return;
+            }
+
             setTimeout(() => {
                 document.getElementById('resultLoading').classList.add('hidden');
                 const resultContent = document.getElementById('resultContent');
